@@ -35,4 +35,4 @@ class Ticket:
 
     def toString(self):
         delimiter = " | "
-        return self.getSubject() + delimiter + self.getOwner() + delimiter + self.getOwnerEmail() + delimiter + self.getOwnerTeam() + delimiter + self.getCreatedDateTime() + delimiter + self.getIncidentNumber() + delimiter + self.getStatus() + delimiter + self.getTypeData()
+        return str(self.getSubject()) + str(delimiter + self.getOwner()) + delimiter + str(self.getOwnerEmail()) + delimiter + str(self.getOwnerTeam()) + delimiter + str(self.getCreatedDateTime()) + delimiter + str(self.getIncidentNumber()) + delimiter + str(self.getStatus()) + delimiter + str(self.getTypeData())

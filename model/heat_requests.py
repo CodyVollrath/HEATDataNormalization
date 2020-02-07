@@ -51,42 +51,37 @@ class heat_requests:
         PARAMS = {'tenant':tenant, 'username':username,'password':password, 'role':role}
         self.postReq = requests.post(url=postURL, data = PARAMS)
         self.__tickets = Ticket_Library()
-
-    def getBusinessObjectsByFilter(self, url, filter):
-        queryKeyWord = "?$filter="
-        url = url + queryKeyWord + filter
-        return requests.get(url = url, params={"Authorization":self.getSessionID()}).json()
+        self.__ticketNumber = 0
 
     def getBusinessObjectsByURLFilter(self, url):
-        try:        
-            key = url[url.index("?")+1:url.index("=")]
-            value = url[url.index("=")+1:]
-            url = url[:url.index("?")]
-            param = {key : value}
-        except: 
-            print("BAD URL")
-            return None
-        headers = {"Authorization":self.getSessionID()}
-        return requests.get(url = url, params = param, headers = headers).json()
-
+        try:
+            newURL = url[:url.index("?")]
+            param = self.__configureParams(url)
+            headers = {"Authorization":self.getSessionID()}
+            jsonData = self.__prettifyJson(requests.get(url = newURL, params = param , headers = headers).json())
+            self.parseJson(jsonData)
+            self.getBusinessObjectsByURLFilter(url)
+            return "Total Incidents: " + str(self.__tickets.length())
+        except Exception as e:
+            return e
+        
+    def __configureParams(self, url):
+        filterKey = url[url.index("?")+1:url.index("=")]
+        filterValue = url[url.index("=")+1:]
+        return  {filterKey : filterValue, "$skip":str(self.__ticketNumber)}
     def getSessionID(self):
         return self.postReq.text.replace("\"","")
 
-    def prettifyJson(self, jsonData):
+    def __prettifyJson(self, jsonData):
         return json.dumps(jsonData, indent=2)
 
-    def writeToFile(self, filename, data):
-        try: 
-            file = open(filename,"w+")
-            file.write(data)
-            return True
-        except:
-            return False
-    
+    def getTickets(self):
+        return self.__tickets
+
     def parseJson(self, jsonData):
-        ticketDictionary = json.loads(jsonData)
-        
-        for item in ticketDictionary['value']:
+        ticketData = json.loads(jsonData)
+        for item in ticketData['value']:
+            self.__ticketNumber += 1
             subject = item['Subject']
             owner = item['Owner']
             ownerTeam = item['OwnerTeam']
@@ -97,9 +92,3 @@ class heat_requests:
             typeData = "Incident"
             ticket = Ticket(subject, owner, ownerTeam, ownerEmail,createdDateTime, incidentNumber, status,typeData)
             self.__tickets.add(ticket)
-        return self.__tickets.length()
-
-password = input("Enter pass: ")
-test = heat_requests("https://southwire-stg.saasit.com/api/rest/authentication/login", "southwire-stg.saasit.com", "Vollrathco", password, "SelfService")
-
-print(test.parseJson(test.prettifyJson(test.getBusinessObjectsByURLFilter("https://southwire-stg.saasit.com/api/odata/businessobject/incidents?$filter=Status eq 'Active'"))))

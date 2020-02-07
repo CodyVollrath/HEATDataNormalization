@@ -6,7 +6,7 @@ def formatDateTime(dateTime):
     time = dateTime[dateTime.index("T")+1:dateTime.index("Z")]
     arrangedDate = __dateArrange(date)
     standardTime = __timeConvert(time)
-    return arrangedDate + " | " + standardTime
+    return arrangedDate + " _ " + standardTime
 
 def __timeConvert(time):
     hours, minutes,seconds = time.split(":")

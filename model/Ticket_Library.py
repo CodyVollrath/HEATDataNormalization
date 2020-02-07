@@ -1,4 +1,5 @@
 from Ticket import Ticket
+import write
 class Ticket_Library:
     def __init__(self):
         self.__tickets = []
@@ -12,3 +13,8 @@ class Ticket_Library:
         return len(self.__tickets)
     def getTicekts(self):
         return self.__tickets
+    def writeTicketToFile(self, filename):
+        output = ""
+        for each in self.__tickets:
+            output += each.toString() + "\n"
+        return write.writeToFile(filename, output)
