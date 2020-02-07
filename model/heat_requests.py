@@ -1,5 +1,8 @@
 import requests
 import json
+import FormaterData
+from Ticket import Ticket
+from Ticket_Library import Ticket_Library
 class heat_requests:
     """
     Description: The heat_requests API Wrapper
@@ -45,10 +48,9 @@ class heat_requests:
         role : str
             The role of the user
         """
-        self.tenant = tenant
-        self.role = role
         PARAMS = {'tenant':tenant, 'username':username,'password':password, 'role':role}
         self.postReq = requests.post(url=postURL, data = PARAMS)
+        self.__tickets = Ticket_Library()
 
     def getBusinessObjectsByFilter(self, url, filter):
         queryKeyWord = "?$filter="
@@ -83,11 +85,21 @@ class heat_requests:
     
     def parseJson(self, jsonData):
         ticketDictionary = json.loads(jsonData)
-        count = 0
+        
         for item in ticketDictionary['value']:
             subject = item['Subject']
-            createdDateTime = item['CreatedDateTime']
+            owner = item['Owner']
+            ownerTeam = item['OwnerTeam']
+            ownerEmail = item['OwnerEmail']
+            createdDateTime = FormaterData.formatDateTime(item['CreatedDateTime'])
+            incidentNumber = item['IncidentNumber']
+            status = item['Status']
+            typeData = "Incident"
+            ticket = Ticket(subject, owner, ownerTeam, ownerEmail,createdDateTime, incidentNumber, status,typeData)
+            self.__tickets.add(ticket)
+        return self.__tickets.length()
+
 password = input("Enter pass: ")
 test = heat_requests("https://southwire-stg.saasit.com/api/rest/authentication/login", "southwire-stg.saasit.com", "Vollrathco", password, "SelfService")
 
-test.parseJson(test.prettifyJson(test.getBusinessObjectsByURLFilter("https://southwire-stg.saasit.com/api/odata/businessobject/incidents?$filter=Status eq 'Active'")))
+print(test.parseJson(test.prettifyJson(test.getBusinessObjectsByURLFilter("https://southwire-stg.saasit.com/api/odata/businessobject/incidents?$filter=Status eq 'Active'"))))

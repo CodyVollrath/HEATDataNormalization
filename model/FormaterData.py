@@ -25,8 +25,3 @@ def __dateArrange(date):
     month = dateItems[1]
     day = dateItems[2]
     return ("%s/%s/%s") % (month,day,year)
-
-print(formatDateTime("2019-12-04T19:00:06Z"))
-print(formatDateTime("2019-12-20T18:02:52Z"))
-print(formatDateTime("2019-12-20T00:02:52Z"))
-print(formatDateTime("2019-12-20T00:02:52Z"))
