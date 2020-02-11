@@ -1,8 +1,8 @@
 import requests
 import json
-import FormaterData
-from Ticket import Ticket
-from Ticket_Library import Ticket_Library
+import controller.FormaterData as FormaterData
+from model.Incident import Incident
+from model.Ticket_Library import Ticket_Library
 class heat_requests:
     """
     Description: The heat_requests API Wrapper
@@ -59,7 +59,7 @@ class heat_requests:
             param = self.__configureParams(url)
             headers = {"Authorization":self.getSessionID()}
             jsonData = self.__prettifyJson(requests.get(url = newURL, params = param , headers = headers).json())
-            self.parseJson(jsonData)
+            self.getIncidents(jsonData)
             self.getBusinessObjectsByURLFilter(url)
             return "Total Incidents: " + str(self.__tickets.length())
         except Exception as e:
@@ -78,17 +78,21 @@ class heat_requests:
     def getTickets(self):
         return self.__tickets
 
-    def parseJson(self, jsonData):
+    def getIncidents(self, jsonData):
         ticketData = json.loads(jsonData)
         for item in ticketData['value']:
             self.__ticketNumber += 1
             subject = item['Subject']
+            creator = item['CreatedBy']
             owner = item['Owner']
-            ownerTeam = item['OwnerTeam']
             ownerEmail = item['OwnerEmail']
+            ownerTeam = item['OwnerTeam']
+            service = item['Service']
             createdDateTime = FormaterData.formatDateTime(item['CreatedDateTime'])
+            resolveDate = FormaterData.formatDateTime(item['ResolvedDateTime'])
             incidentNumber = item['IncidentNumber']
             status = item['Status']
             typeData = "Incident"
-            ticket = Ticket(subject, owner, ownerTeam, ownerEmail,createdDateTime, incidentNumber, status,typeData)
+            ticket = Incident(subject, creator,owner, ownerEmail, ownerTeam, service, createdDateTime, resolveDate,
+                              incidentNumber, status, typeData)
             self.__tickets.add(ticket)
