@@ -28,7 +28,4 @@ class WriteTicketsToXlsx:
         self.__wbw.close()
 
     def __writeHeadersForIncedents(self):
-        col = 0
-        for header in self.__headers:
-            self.__wbw.writeToColumn(col,header)
-            col += 1
+        self.__wbw.writeToRow(0, self.__headers)

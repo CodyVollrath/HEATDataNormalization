@@ -52,7 +52,6 @@ class WorkBookWriter:
             raise ValueError("col must not be less than zero")
         if item is None:
             item = ""
-        col = 0
         self.sheet.write(row, col, item)
     def close(self):
         self.out_wb.close()
