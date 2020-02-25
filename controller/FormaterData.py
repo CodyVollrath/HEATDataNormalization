@@ -45,13 +45,16 @@ def testFindDateRange(minDate, maxDate, currentDate):
     minDate = dto(minDate)
     maxDate = dto(maxDate)
     currentDate = dto(currentDate)
-    min = int(str(minDate.getYear() + minDate.getMonth() + minDate.getDay()))
-    max = int(str(maxDate.getYear() + maxDate.getMonth() + maxDate.getDay()))
-    curr = int(str(currentDate.getYear() + currentDate.getMonth() + currentDate.getDay() ))
+    min = int(str(minDate.getYear() + minDate.getMonth() + minDate.getDay() +  minDate.getHour() + minDate.getMinute() + minDate.getSecond()))
+    max = int(str(maxDate.getYear() + maxDate.getMonth() + maxDate.getDay() + maxDate.getHour() + maxDate.getMinute() + maxDate.getSecond()))
+    if min > max:
+        raise ValueError("minDate must not be greater than maxDate")
+
+    curr = int(str(currentDate.getYear() + currentDate.getMonth() + currentDate.getDay() + currentDate.getHour() + currentDate.getMinute() + currentDate.getSecond()))
     if (min - curr) <= 0 and (max - curr) >= 0 :
         print("Date is within range")
     else:
         print("Date is NOT within Range")
 
 
-testFindDateRange("02/05/2021 | 10:50:80PM","09/07/2021 | 10:50:80PM","08/10/2021 | 10:50:80PM") #<- Do more testing on this and make sure it works for sure
+testFindDateRange("11/08/2021 | 12:00:00AM", "11/08/2021 | 11:59:59PM", "11/08/2021 | 01:10:00PM") #<- Do more testing on this and make sure it works for sure

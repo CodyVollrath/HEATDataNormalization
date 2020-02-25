@@ -1,5 +1,3 @@
-import re
-import datetime
 class DateTimeObj:
     def __init__(self, dateTimeString):
         self.__fulldate = dateTimeString[:dateTimeString.index(" ")]
