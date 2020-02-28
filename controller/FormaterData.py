@@ -52,9 +52,12 @@ def testFindDateRange(minDate, maxDate, currentDate):
 
     curr = int(str(currentDate.getYear() + currentDate.getMonth() + currentDate.getDay() + currentDate.getHour() + currentDate.getMinute() + currentDate.getSecond()))
     if (min - curr) <= 0 and (max - curr) >= 0 :
-        print("Date is within range")
+        return True
     else:
-        print("Date is NOT within Range")
-
-
-testFindDateRange("11/08/2021 | 12:00:00AM", "11/08/2021 | 11:59:59PM", "11/08/2021 | 01:10:00PM") #<- Do more testing on this and make sure it works for sure
+        return False
+def isDateLessThanOrEqualTo(date1, date2):
+    date1 = dto(date1)
+    date2 = dto(date2)
+    firstDate = int(str(date1.getYear() + date1.getMonth() + date1.getDay() + date1.getHour() + date1.getMinute() + date1.getSecond()))
+    secondDate = int(str(date2.getYear() + date2.getMonth() + date2.getDay() + date2.getHour() + date2.getMinute() + date2.getSecond()))
+    return firstDate <= secondDate

@@ -9,8 +9,4 @@ class Incident(Ticket):
 
     def toString(self):
         delimiter = " | "
-        return str(self.getSubject()) + delimiter + str(self.getCreator()) + str(delimiter + self.getOwner()) + \
-               delimiter + str(self.getOwnerEmail()) + delimiter + str(self.getOwnerTeam()) + delimiter + \
-               str(self.getService()) + delimiter + str(self.getCreatedDateTime()) + \
-               delimiter + str(self.getIncidentNumber()) + delimiter + str(self.getResolveDateTime()) + delimiter + \
-               str(self.getStatus()) + delimiter + str(self.getTypeData())
+        return Ticket.toString() + delimiter + self.__incidentNumber

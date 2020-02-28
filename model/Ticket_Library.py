@@ -13,6 +13,7 @@ class Ticket_Library:
         prevLength = len(self.__tickets)
         self.__tickets.append(ticket)
         return len(self.__tickets) > prevLength
+
     def length(self):
         return len(self.__tickets)
     def getTicekts(self):
@@ -28,6 +29,9 @@ class Ticket_Library:
             except:
                 output += ""
         return write.writeToFile(filename, output)
+    '''
+    Analytic Tools for keeping track of the numbers
+    '''
     def findTicketsDateRange(self, minDate, maxDate, type):
         """
         Finds the tickets within the date range specfied by min and max date params and gets the number of what ever
@@ -42,12 +46,3 @@ class Ticket_Library:
         for each in self.__tickets:
             if each.getTypeData() == "Incident":
                 count += 1
-    def getNumberIncidentsSinceyesterday(self):
-        pass
-    def getNumberIncidentsSinceOneWeekAgo(self):
-
-        pass
-    def getNumberIncidentsSinceOneMonthAgo(self):
-        pass
-    def getNumberOfIncidentsResolved(self):
-        pass

@@ -3,6 +3,7 @@ import json
 import controller.FormaterData as FormaterData
 from model.Incident import Incident
 from model.Ticket_Library import Ticket_Library
+from model.Service_Request import Service_Request
 class heat_requests:
     """
     Description: The heat_requests API Wrapper
@@ -53,22 +54,22 @@ class heat_requests:
         self.__tickets = Ticket_Library()
         self.__ticketNumber = 0
 
-    def getBusinessObjectsByURLFilter(self, url):
+    def getBusinessObjectsByURLFilter(self, url, dateToStop, isIncident):
         try:
             newURL = url[:url.index("?")]
             param = self.__configureParams(url)
-            headers = {"Authorization":self.getSessionID()}
+            headers = {"Authorization" : self.getSessionID()}
             jsonData = self.__prettifyJson(requests.get(url = newURL, params = param , headers = headers).json())
-            self.getIncidents(jsonData)
-            self.getBusinessObjectsByURLFilter(url)
-            return "Total Incidents: " + str(self.__tickets.length())
+            if self.getTicketData(isIncident,jsonData, dateToStop):
+                self.getBusinessObjectsByURLFilter(url, dateToStop)
+            return "Total Tickets: " + str(self.__tickets.length())
         except Exception as e:
             return e
         
     def __configureParams(self, url):
         filterKey = url[url.index("?")+1:url.index("=")]
         filterValue = url[url.index("=")+1:]
-        return  {filterKey : filterValue, "$skip":str(self.__ticketNumber)}
+        return  {filterKey : filterValue, "$skip" : str(self.__ticketNumber)}
     def getSessionID(self):
         return self.postReq.text.replace("\"","")
 
@@ -77,22 +78,57 @@ class heat_requests:
 
     def getTickets(self):
         return self.__tickets
-
-    def getIncidents(self, jsonData):
+    def getTicketData(self, isIncident, jsonData, dateToStop):
+        if isIncident:
+            return self.getIncidents(jsonData, dateToStop)
+        else:
+            return self.getServiceReqs(jsonData, dateToStop)
+    def getIncidents(self, jsonData, dateToStop):
         ticketData = json.loads(jsonData)
         for item in ticketData['value']:
-            self.__ticketNumber += 1
-            subject = item['Subject']
-            creator = item['CreatedBy']
-            owner = item['Owner']
-            ownerEmail = item['OwnerEmail']
-            ownerTeam = item['OwnerTeam']
-            service = item['Service']
-            createdDateTime = FormaterData.formatDateTime(item['CreatedDateTime'])
-            resolveDate = FormaterData.formatDateTime(item['ResolvedDateTime'])
-            incidentNumber = item['IncidentNumber']
-            status = item['Status']
-            typeData = "Incident"
-            ticket = Incident(subject, creator,owner, ownerEmail, ownerTeam, service, createdDateTime, resolveDate,
-                              incidentNumber, status, typeData)
-            self.__tickets.add(ticket)
+            if FormaterData.isDateLessThanOrEqualTo(dateToStop, FormaterData.formatDateTime(item['CreatedDateTime'])):
+                subject = item['Subject']
+                creator = item['CreatedBy']
+                owner = item['Owner']
+                ownerEmail = item['OwnerEmail']
+                ownerTeam = item['OwnerTeam']
+                service = item['Service']
+                createdDateTime = FormaterData.formatDateTime(item['CreatedDateTime'])
+                resolveDate = FormaterData.formatDateTime(item['ResolvedDateTime'])
+                incidentNumber = item['IncidentNumber']
+                print("Incident number: " + str(incidentNumber) + " is being fetched")
+                status = item['Status']
+                typeData = "Incident"
+                ticket = Incident(subject, creator, owner, ownerEmail, ownerTeam, service, createdDateTime, resolveDate,
+                                  incidentNumber, status, typeData)
+                print("Ticket Added: " + str(self.__tickets.add(ticket)))
+                self.__ticketNumber += 1
+                print(self.__ticketNumber)
+            else:
+                return False
+        return True
+
+    def getServiceReqs(self, jsonData, dateToStop):
+        ticketData = json.loads(jsonData)
+        for item in ticketData['value']:
+            if FormaterData.isDateLessThanOrEqualTo(dateToStop, FormaterData.formatDateTime(item['CreatedDateTime'])):
+                #Required data for object addition to count as ticket -
+                subject = item['Subject']
+                creator = item['CreatedBy']
+                ownerEmail = item['OwnerEmail']
+                typeData = "Service Request"
+                service = item['Service']
+                #Relevant Data -
+                servReqId = item['ServiceReqNumber']
+                print("Service Request: " + str(servReqId) + " is being fetched")
+                status = item['Status']
+                ownerTeam = item['OwnerTeam']
+                owner = item['Owner']
+                createdOn = FormaterData.formatDateTime(item['CreatedDateTime'])
+                resolvedOn = FormaterData.formatDateTime(item['ResolvedDateTime'])
+                ticket = Service_Request(subject, creator, owner, ownerEmail, ownerTeam, service, createdOn, resolvedOn, servReqId, status, typeData)
+                self.__tickets.add(ticket)
+            else:
+                return False
+        return True
+

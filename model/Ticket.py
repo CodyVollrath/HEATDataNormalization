@@ -37,3 +37,10 @@ class Ticket:
 
     def getTypeData(self):
         return self.__status
+    def toString(self):
+        delimiter = " | "
+        return str(self.getSubject()) + delimiter + str(self.getCreator()) + delimiter  + str(self.getOwner()) + \
+               delimiter + str(self.getOwnerEmail()) + delimiter + str(self.getOwnerTeam()) + delimiter + \
+               str(self.getService()) + delimiter + str(self.getCreatedDateTime()) + \
+               delimiter + delimiter + str(self.getResolveDateTime()) + delimiter + \
+               str(self.getStatus()) + delimiter + str(self.getTypeData())
