@@ -16,11 +16,17 @@ class Ticket_Library:
 
     def length(self):
         return len(self.__tickets)
-    def getTicekts(self):
+
+    def getTickets(self):
         return self.__tickets
-    def generateReports(self, filename, sheetname = "Sheet1"):
-        report = ticketWriter(filename,self.__tickets, sheetname = sheetname)
-        report.generateIncedentReport()
+
+    def generateReports(self, filename):
+        report = ticketWriter(filename,self.__tickets)
+        try:
+            report.generateReports()
+        except:
+            print()
+
     def writeTicketToFile(self, filename):
         output = ""
         for each in self.__tickets:

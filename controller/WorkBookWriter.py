@@ -24,7 +24,7 @@ class WorkBookWriter:
     :postcondition a worksheet will be created with the specified name and data entered into provided the condition
     entered in it allows for it.
     """
-    def writeToColumn(self,col,data):
+    def writeToColumn(self, col, data):
         if col < 0:
             raise ValueError("col must not be less than zero")
         if data is None:
@@ -53,5 +53,7 @@ class WorkBookWriter:
         if item is None:
             item = ""
         self.sheet.write(row, col, item)
+    def addSheetName(self, sheetName):
+        self.sheet = self.out_wb.add_worksheet(sheetName)
     def close(self):
         self.out_wb.close()

@@ -54,13 +54,14 @@ class heat_requests:
         self.__tickets = Ticket_Library()
         self.__ticketNumber = 0
 
-    def getBusinessObjectsByURLFilter(self, url, dateToStop, isIncident):
+    def getBusinessObjectsByURLFilter(self, url, dateToStop):
         try:
+            isIncident = "incidents" in url
             newURL = url[:url.index("?")]
             param = self.__configureParams(url)
             headers = {"Authorization" : self.getSessionID()}
             jsonData = self.__prettifyJson(requests.get(url = newURL, params = param , headers = headers).json())
-            if self.getTicketData(isIncident,jsonData, dateToStop):
+            if self.getTicketData(isIncident, jsonData, dateToStop):
                 self.getBusinessObjectsByURLFilter(url, dateToStop)
             return "Total Tickets: " + str(self.__tickets.length())
         except Exception as e:
@@ -127,7 +128,7 @@ class heat_requests:
                 createdOn = FormaterData.formatDateTime(item['CreatedDateTime'])
                 resolvedOn = FormaterData.formatDateTime(item['ResolvedDateTime'])
                 ticket = Service_Request(subject, creator, owner, ownerEmail, ownerTeam, service, createdOn, resolvedOn, servReqId, status, typeData)
-                self.__tickets.add(ticket)
+                print(str(self.__tickets.add(ticket)))
             else:
                 return False
         return True
