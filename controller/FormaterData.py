@@ -12,7 +12,15 @@ def formatDateTime(dateTime):
     arrangedDate = __dateArrange(date)
     standardTime = __timeConvert(time)
     return arrangedDate + " | " + standardTime
-
+def getCurrentDate(time=False):
+    currentDate = datetime.datetime.now()
+    if time:
+        formatedTime = "{year}{month}{day}_{hour}{minute}{second}".format(year=currentDate.year, month=currentDate.month, day=currentDate.day,
+                                                                          hour=currentDate.hour ,minute=currentDate.minute, second=currentDate.second)
+    else:
+        formatedTime = "{year}{month}{day}".format(year=currentDate.year, month=currentDate.month,
+                                                                          day=currentDate.day)
+    return formatedTime
 def __timeConvert(time):
     hours, minutes,seconds = time.split(":")
     hours, minutes, seconds = int(hours), int(minutes), int(seconds)
@@ -55,6 +63,7 @@ def testFindDateRange(minDate, maxDate, currentDate):
         return True
     else:
         return False
+
 def isDateLessThanOrEqualTo(date1, date2):
     date1 = dto(date1)
     date2 = dto(date2)

@@ -14,7 +14,7 @@ class Ticket:
         return self.__subject
 
     def getCreator(self):
-        self.__creator
+        return self.__creator
 
     def getOwner(self):
         return self.__owner
@@ -37,6 +37,7 @@ class Ticket:
 
     def getTypeData(self):
         return self.__status
+
     def toString(self):
         delimiter = " | "
         return str(self.getSubject()) + delimiter + str(self.getCreator()) + delimiter  + str(self.getOwner()) + \

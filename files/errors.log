@@ -1,0 +1,4 @@
+2020316_162452: 'list' object has no attribute 'getNumberOfServReqClose'
+2020316_163240: 'list' object has no attribute 'getNumberOfServReqClose'
+2020316_17842: HTTPSConnectionPool(host='southwire.saasit.com', port=443): Max retries exceeded with url: /api/odata/businessobject/ServiceReqs?%24orderby=CreatedDateTime+desc&%24skip=0&%24top=100 (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self signed certificate in certificate chain (_ssl.c:1056)')))
+2020316_235010: 'value'
